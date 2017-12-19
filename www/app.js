@@ -46,7 +46,7 @@ module.controller('AppController', function($scope, Product, $http) {
                     loadingDialog.hide();
                     ons.notification.alert({
                         title: '受取場検索に失敗しました',
-                        message: '受取場を取得できませんでした',
+                        message: 'バーコードの形式が違います！',
                         buttonLabel: 'OK',
                         animation: 'default', // もしくは'none'
                     });
@@ -75,6 +75,10 @@ module.controller('AppController', function($scope, Product, $http) {
     $scope.search = function(getStr, callback, failCallback) {
         var arr=getStr.split(',');
         var apiUrl = 'http://maps.google.com/maps?q=';
+        
+        if(Object.keys(arr).length<4){
+            failCallback(new Error());
+        }
         
         var product=createProduct(arr,apiUrl);
         
