@@ -26,16 +26,16 @@ module.controller('AppController', function($scope, Product, $http) {
     $scope.scan = function() {
         var onSuccess = function(result) {
             if (!result.cancelled) {
-                alert("We got a barcode\n" +
-                      "Result: " + result.text + "\n" +
-                      "Format: " + result.format + "\n" +
-                      "Cancelled: " + result.cancelled);
+//                alert("We got a barcode\n" +
+//                      "Result: " + result.text + "\n" +
+//                      "Format: " + result.format + "\n" +
+//                      "Cancelled: " + result.cancelled);
                 
                 loadingDialog.show();
                 
                 $scope.search(result.text, function(product) {
                     $scope.history.unshift(product);
-                    $scope.history = $scope.history.slice(0, 10);
+                    $scope.history = $scope.history.slice(0, 50);
                     $scope.saveHistory();
                     
                     $scope.selectProduct(product);
@@ -75,32 +75,22 @@ module.controller('AppController', function($scope, Product, $http) {
     $scope.search = function(getStr, callback, failCallback) {
         var arr=getStr.split(',');
         var apiUrl = 'http://maps.google.com/maps?q=';
-        // 取得したアプリIDを代入
-        // http://www.yahoo-help.jp/app/answers/detail/p/537/a_id/43398/session/L2F2LzEvdGltZS8xNDE4NjEyODk4L3NpZC9WekVGaFc5bQ%3D%3D
-        var appId = 'dj0zaiZpPVdaMnVsQnF4aHVlUCZzPWNvbnN1bWVyc2VjcmV0Jng9YTE-';
-        $http.get(apiUrl, {params: {appid: appId, jan: getStr}})
-            .success(function(data, status, headers, config) {
-                try {
-                    var product = createProduct(data);
-                    callback(product);
-                } catch(e) {
-                    failCallback();
-                }
-            })
-            .error(function(data, status, headers, config) {
-                failCallback();
-            });
+        
+        var product=createProduct(arr,apiUrl);
+        
+        callback(product);
         
         // APIの返り値からProductオブジェクトを生成する
-        function createProduct(response) {
-            var firstResult = response.ResultSet[0].Result[0];
+        function createProduct(response,response2) {
+            var firstResult = response;
+            var secondResult = response2;
+            
             return new Product({
-                name: firstResult.Name,
-                desc: firstResult.Description,
-                url: firstResult.Url,
-                imageUrl: firstResult.Image.Medium,
-                thumbnailUrl: firstResult.Image.Small,
-                price: firstResult.Price._value
+                ukecd: firstResult[0],
+                ido: firstResult[1],
+                keido: firstResult[2],
+                haijun: firstResult[3],
+                url: secondResult+firstResult[1]+','+firstResult[2]
             });
         }
     };
