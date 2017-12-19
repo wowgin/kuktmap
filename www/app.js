@@ -77,7 +77,8 @@ module.controller('AppController', function($scope, Product, $http) {
         var apiUrl = 'http://maps.google.com/maps?q=';
         
         if(Object.keys(arr).length<4){
-            failCallback(new Error());
+            failCallback();
+            return false;
         }
         
         var product=createProduct(arr,apiUrl);
