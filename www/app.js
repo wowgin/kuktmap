@@ -73,7 +73,12 @@ module.controller('AppController', function($scope, Product, $http) {
     };
 
     $scope.search = function(getStr, callback, failCallback) {
-        var arr=getStr.split(',');
+        //  暗号化したデータを複合化
+        var ret;
+        var key=4;
+        ret=decaesar(getStr,key);
+        
+        var arr=ret.split(',');
         var apiUrl = 'http://maps.google.com/maps?q=';
         
         if(Object.keys(arr).length<4){
@@ -97,6 +102,25 @@ module.controller('AppController', function($scope, Product, $http) {
                 haijun: firstResult[3],
                 url: secondResult+firstResult[1]+','+firstResult[2]
             });
+        }
+        
+        /* シーザーー暗号化 */
+        function caesar(val, key) {
+          val = encodeURIComponent(val);
+          var result = "";
+          for (var i = 0; i < val.length; i++) {
+            result += String.fromCharCode(val.charCodeAt(i) + key);
+          }
+          return result;
+        }
+        
+        /* シーザー復号化 */
+        function decaesar(val, key) {
+          var result = "";
+          for (var i = 0; i < val.length; i++) {
+            result += String.fromCharCode(val.charCodeAt(i) - key);
+          }
+          return decodeURIComponent(result) ;
         }
     };
 
