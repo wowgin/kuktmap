@@ -53,16 +53,12 @@
             </ons-toolbar>
             <div class="detail-wrapper">
                 <div class="detail-title">
-                    {{currentProduct.name}}
+                    受取場CD: {{currentProduct.ukecd}}
                 </div>
-                <div class="detail-image-wrapper">
-                    <img ng-src="{{currentProduct.imageUrl}}" class="detail-image">
-                </div>
-                <div class="detail-price">値段: {{currentProduct.price}}円 </div>
-                <div class="detail-desc">
-                    {{currentProduct.desc}}
-                </div>
-                <ons-button modifier="large" ng-click="openWithBrowser(currentProduct.url)">ブラウザで詳細を開く</ons-button>
+                <div class="detail-haijun">配順: {{currentProduct.haijun}}</div>
+                <div class="detail-ido">緯度: {{currentProduct.ido}}</div>
+                <div class="detail-keido">経度: {{currentProduct.keido}}</div>
+                <ons-button modifier="large" ng-click="openWithBrowser(currentProduct.url)">地図アプリで検索する</ons-button>
                 <br>
             </div>
         </ons-page>
@@ -78,18 +74,15 @@
                 <ons-list>
                     <ons-list-item ng-repeat="product in history track by $index" 
                         class="item-wrapper" modifier="chevron" ng-click="selectProduct(product)">
-                        <div class="item-title">{{product.name}}</div>
+                        <div class="item-title">受取場CD: {{product.ukecd}}</div>
                         
                         <ons-row>
-                            <ons-col width="90px">
-                                <img ng-src="{{product.thumbnailUrl}}" class="item-image">
-                            </ons-col>
                             <ons-col>
-                                <div class="item-desc">
-                                    {{product.desc}}
+                                <div class="item-haijun">
+                                    配順: {{product.haijun}}
                                 </div>
                                 <div class="item-price">
-                                    <span class="item-price-digit">{{product.price}}</span> <span class="item-price-unit">円</span>
+                                    <span class="item-ido">緯度: {{product.ido}}</span> <span class="item-keido">経度: {{product.keido}}</span>
                                 </div>
                             </ons-col>
                         </ons-row>

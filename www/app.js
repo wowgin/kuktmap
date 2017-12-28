@@ -11,11 +11,10 @@ ons.ready(function() {
 
 module.factory('Product', function() {
    var Product = function(params) {
-       this.name = params.name;
-       this.price = params.price;
-       this.desc = params.desc;
-       this.thumbnailUrl = params.thumbnailUrl;
-       this.imageUrl = params.imageUrl;
+       this.ukecd = params.ukecd;
+       this.ido = params.ido;
+       this.keido = params.keido;
+       this.haijun = params.haijun;
        this.url = params.url;
    };
    
@@ -27,16 +26,16 @@ module.controller('AppController', function($scope, Product, $http) {
     $scope.scan = function() {
         var onSuccess = function(result) {
             if (!result.cancelled) {
-                /*alert("We got a barcode\n" +
-                      "Result: " + result.text + "\n" +
-                      "Format: " + result.format + "\n" +
-                      "Cancelled: " + result.cancelled);*/
+//                alert("We got a barcode\n" +
+//                      "Result: " + result.text + "\n" +
+//                      "Format: " + result.format + "\n" +
+//                      "Cancelled: " + result.cancelled);
                 
                 loadingDialog.show();
                 
                 $scope.search(result.text, function(product) {
                     $scope.history.unshift(product);
-                    $scope.history = $scope.history.slice(0, 10);
+                    $scope.history = $scope.history.slice(0, 50);
                     $scope.saveHistory();
                     
                     $scope.selectProduct(product);
@@ -46,8 +45,8 @@ module.controller('AppController', function($scope, Product, $http) {
                 }, function() {
                     loadingDialog.hide();
                     ons.notification.alert({
-                        title: '商品検索に失敗しました',
-                        message: '商品情報を取得できませんでした',
+                        title: '受取場検索に失敗しました',
+                        message: 'バーコードの形式が違います！',
                         buttonLabel: 'OK',
                         animation: 'default', // もしくは'none'
                     });
@@ -73,35 +72,55 @@ module.controller('AppController', function($scope, Product, $http) {
         navi.pushPage('details.html');
     };
 
-    $scope.search = function(janCode, callback, failCallback) {
-        var apiUrl = 'http://shopping.yahooapis.jp/ShoppingWebService/V1/json/itemSearch';
-        // 取得したアプリIDを代入
-        // http://www.yahoo-help.jp/app/answers/detail/p/537/a_id/43398/session/L2F2LzEvdGltZS8xNDE4NjEyODk4L3NpZC9WekVGaFc5bQ%3D%3D
-        var appId = 'dj0zaiZpPVdaMnVsQnF4aHVlUCZzPWNvbnN1bWVyc2VjcmV0Jng9YTE-';
-        $http.get(apiUrl, {params: {appid: appId, jan: janCode}})
-            .success(function(data, status, headers, config) {
-                try {
-                    var product = createProduct(data);
-                    callback(product);
-                } catch(e) {
-                    failCallback();
-                }
-            })
-            .error(function(data, status, headers, config) {
-                failCallback();
-            });
+    $scope.search = function(getStr, callback, failCallback) {
+        //  暗号化したデータを複合化
+        var ret;
+        var key=4;
+        ret=decaesar(getStr,key);
+        
+        var arr=ret.split(',');
+        var apiUrl = 'http://maps.google.com/maps?q=';
+        
+        if(Object.keys(arr).length<4){
+            failCallback();
+            return false;
+        }
+        
+        var product=createProduct(arr,apiUrl);
+        
+        callback(product);
         
         // APIの返り値からProductオブジェクトを生成する
-        function createProduct(response) {
-            var firstResult = response.ResultSet[0].Result[0];
+        function createProduct(response,response2) {
+            var firstResult = response;
+            var secondResult = response2;
+            
             return new Product({
-                name: firstResult.Name,
-                desc: firstResult.Description,
-                url: firstResult.Url,
-                imageUrl: firstResult.Image.Medium,
-                thumbnailUrl: firstResult.Image.Small,
-                price: firstResult.Price._value
+                ukecd: firstResult[0],
+                ido: firstResult[1],
+                keido: firstResult[2],
+                haijun: firstResult[3],
+                url: secondResult+firstResult[1]+','+firstResult[2]
             });
+        }
+        
+        /* シーザーー暗号化 */
+        function caesar(val, key) {
+          val = encodeURIComponent(val);
+          var result = "";
+          for (var i = 0; i < val.length; i++) {
+            result += String.fromCharCode(val.charCodeAt(i) + key);
+          }
+          return result;
+        }
+        
+        /* シーザー復号化 */
+        function decaesar(val, key) {
+          var result = "";
+          for (var i = 0; i < val.length; i++) {
+            result += String.fromCharCode(val.charCodeAt(i) - key);
+          }
+          return decodeURIComponent(result) ;
         }
     };
 

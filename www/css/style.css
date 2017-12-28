@@ -68,6 +68,29 @@
     font-weight: normal;
 }
 
+.item-haijun {
+    line-height: 1.2;
+    color: #666;
+    font-size: 13px;
+    padding-right: 24px;
+    margin-bottom: 6px;
+}
+
+.item-ido {
+    line-height: 1.2;
+    color: #666;
+    font-size: 13px;
+    padding-right: 24px;
+    margin-bottom: 6px;
+}
+
+.item-keido {
+    line-height: 1.2;
+    color: #666;
+    font-size: 13px;
+    padding-right: 24px;
+    margin-bottom: 6px;
+}
 .detail-wrapper {
     padding: 10px;
 }
@@ -100,6 +123,23 @@
     font-size: 15px;
 }
 
+.detail-haijun {
+    color: #666;
+    font-size: 15px;
+    margin: 10px 0;
+}
+
+.detail-ido {
+    color: #666;
+    font-size: 15px;
+    margin: 10px 0;
+}
+
+.detail-keido {
+    color: #666;
+    font-size: 15px;
+    margin: 10px 0;
+}
 .empty-history {
     text-align: center;
     margin: 30% auto;
