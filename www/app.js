@@ -11,6 +11,9 @@ ons.ready(function() {
 
 module.factory('Product', function() {
    var Product = function(params) {
+       this.id=params.id;
+       this.idnm=params.idnm;
+       this.kumcd=params.kumcd;
        this.ukecd = params.ukecd;
        this.ido = params.ido;
        this.keido = params.keido;
@@ -45,7 +48,7 @@ module.controller('AppController', function($scope, Product, $http) {
                 }, function() {
                     loadingDialog.hide();
                     ons.notification.alert({
-                        title: '受取場検索に失敗しました',
+                        title: '受取場・組合員検索に失敗しました',
                         message: 'バーコードの形式が違います！',
                         buttonLabel: 'OK',
                         animation: 'default', // もしくは'none'
@@ -81,7 +84,7 @@ module.controller('AppController', function($scope, Product, $http) {
         var arr=ret.split(',');
         var apiUrl = 'http://maps.google.com/maps?q=';
         
-        if(Object.keys(arr).length<4){
+        if(Object.keys(arr).length<6){
             failCallback();
             return false;
         }
@@ -94,13 +97,30 @@ module.controller('AppController', function($scope, Product, $http) {
         function createProduct(response,response2) {
             var firstResult = response;
             var secondResult = response2;
+            var pid;
+            var pidnm;
+            
+            pid=firstResult[0];
+            
+            switch (pid) {
+                case "0" : pidnm="◎受取場住所完全一致" ; break ;
+                case "1" : pidnm="△受取場住所部分一致" ; break ;
+                case "100" : pidnm="◎組合員住所完全一致" ; break ;
+                case "101" : pidnm="△組合員住所部分一致" ; break ;
+                case "600" : pidnm="コメント情報" ; break ;
+                case "700" : pidnm="写真情報" ; break ;
+                default : pidnm="検索結果候補なし" ; break ;
+            }
             
             return new Product({
-                ukecd: firstResult[0],
-                ido: firstResult[1],
-                keido: firstResult[2],
-                haijun: firstResult[3],
-                url: secondResult+firstResult[1]+','+firstResult[2]
+                id: pid,
+                idnm: pidnm,
+                kumcd: firstResult[1],
+                ukecd: firstResult[2],
+                ido: firstResult[3],
+                keido: firstResult[4],
+                haijun: firstResult[5],
+                url: secondResult+firstResult[3]+','+firstResult[4]
             });
         }
         

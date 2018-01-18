@@ -26,7 +26,7 @@
                     <div class="center">スキャン開始</div>
                 </ons-toolbar>
                 <div class="scanner-wrapper">
-                    <p class="scanner-label">受取場のバーコードをスキャンして、その受取場の詳細情報を見てみましょう</p>
+                    <p class="scanner-label">受取場・組合員のバーコードをスキャンして、詳細情報を見てみましょう</p>
                     <div class="scanner-eye-catch">
                         <ons-icon icon="fa-barcode" size="160px"></ons-icon>
                     </div>
@@ -40,7 +40,7 @@
         <ons-alert-dialog>
             <div class="alert-dialog-title">処理中...</div>
             <div class="alert-dialog-content">
-                <ons-icon icon="ion-load-c" spin="true"></ons-icon> <span style="font-size: 13px; color: #999">受取場情報を検索しています...</span>
+                <ons-icon icon="ion-load-c" spin="true"></ons-icon> <span style="font-size: 13px; color: #999">情報を検索しています...</span>
             </div>
         </ons-alert-dialog>
     </ons-template>
@@ -53,6 +53,12 @@
             </ons-toolbar>
             <div class="detail-wrapper">
                 <div class="detail-title">
+                    検索結果: {{currentProduct.idnm}}
+                </div>
+                <div class="detail-kumcd">
+                    組合員CD: {{currentProduct.kumcd}}
+                </div>
+                <div class="detail-ukecd">
                     受取場CD: {{currentProduct.ukecd}}
                 </div>
                 <div class="detail-haijun">配順: {{currentProduct.haijun}}</div>
@@ -74,15 +80,17 @@
                 <ons-list>
                     <ons-list-item ng-repeat="product in history track by $index" 
                         class="item-wrapper" modifier="chevron" ng-click="selectProduct(product)">
-                        <div class="item-title">受取場CD: {{product.ukecd}}</div>
-                        
+                        <div class="item-title">検索結果: {{product.idnm}}</div>
                         <ons-row>
                             <ons-col>
+                                <div class="item-kumcd">
+                                    組合員CD: {{product.kumcd}}
+                                </div>
+                                <div class="item-ukecd">
+                                    受取場CD: {{product.ukecd}}
+                                </div>
                                 <div class="item-haijun">
                                     配順: {{product.haijun}}
-                                </div>
-                                <div class="item-price">
-                                    <span class="item-ido">緯度: {{product.ido}}</span> <span class="item-keido">経度: {{product.keido}}</span>
                                 </div>
                             </ons-col>
                         </ons-row>
