@@ -105,8 +105,10 @@ module.controller('AppController', function($scope, Product, $http) {
             switch (pid) {
                 case "0" : pidnm="◎受取場住所完全一致" ; break ;
                 case "1" : pidnm="△受取場住所部分一致" ; break ;
+                case "2" : pidnm="◎受取場住所手動変更" ; break ;
                 case "100" : pidnm="◎組合員住所完全一致" ; break ;
                 case "101" : pidnm="△組合員住所部分一致" ; break ;
+                case "102" : pidnm="◎組合員住所手動変更" ; break ;
                 case "600" : pidnm="コメント情報" ; break ;
                 case "700" : pidnm="写真情報" ; break ;
                 default : pidnm="検索結果候補なし" ; break ;
