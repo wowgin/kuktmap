@@ -48,7 +48,7 @@ module.controller('AppController', function($scope, Product, $http) {
                 }, function() {
                     loadingDialog.hide();
                     ons.notification.alert({
-                        title: '受取場・組合員検索に失敗しました',
+                        title: '検索が失敗しました',
                         message: 'バーコードの形式が違います！',
                         buttonLabel: 'OK',
                         animation: 'default', // もしくは'none'
