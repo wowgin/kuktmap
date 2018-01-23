@@ -53,6 +53,9 @@
             </ons-toolbar>
             <div class="detail-wrapper">
                 <div class="detail-title">
+                    ナマエ: {{currentProduct.nm}}
+                </div>
+                <div class="detail-kakka">
                     検索結果: {{currentProduct.idnm}}
                 </div>
                 <div class="detail-kumcd">
@@ -80,9 +83,12 @@
                 <ons-list>
                     <ons-list-item ng-repeat="product in history track by $index" 
                         class="item-wrapper" modifier="chevron" ng-click="selectProduct(product)">
-                        <div class="item-title">検索結果: {{product.idnm}}</div>
+                        <div class="item-title">ナマエ: {{product.nm}}</div>
                         <ons-row>
                             <ons-col>
+                                <div class="item-kekka">
+                                    検索結果: {{product.idnm}}
+                                </div>
                                 <div class="item-kumcd">
                                     組合員CD: {{product.kumcd}}
                                 </div>
