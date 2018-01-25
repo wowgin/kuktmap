@@ -19,7 +19,9 @@ module.factory('Product', function() {
        this.keido = params.keido;
        this.haijun = params.haijun;
        this.nm = params.nm;
+       this.adr = params.adr;
        this.url = params.url;
+       this.url2 = params.url2;
    };
    
    return Product;
@@ -85,7 +87,7 @@ module.controller('AppController', function($scope, Product, $http) {
         var arr=ret.split(',');
         var apiUrl = 'http://maps.google.com/maps?q=';
         
-        if(Object.keys(arr).length<7){
+        if(Object.keys(arr).length<8){
             failCallback();
             return false;
         }
@@ -101,8 +103,10 @@ module.controller('AppController', function($scope, Product, $http) {
             var pid;
             var pidnm;
             var para
+            var para2
             
             para=firstResult[3]+','+firstResult[4]
+            para2=firstResult[7]
             
             pid=firstResult[0];
                         
@@ -127,7 +131,9 @@ module.controller('AppController', function($scope, Product, $http) {
                 keido: firstResult[4],
                 haijun: firstResult[5],
                 nm: firstResult[6],
-                url: secondResult+para
+                adr: firstResult[7],
+                url: secondResult+para,
+                url2: secondResult+para2
             });
         }
         
