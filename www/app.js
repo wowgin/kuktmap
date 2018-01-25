@@ -100,9 +100,12 @@ module.controller('AppController', function($scope, Product, $http) {
             var secondResult = response2;
             var pid;
             var pidnm;
+            var para
+            
+            para=firstResult[3]+','+firstResult[4]
             
             pid=firstResult[0];
-            
+                        
             switch (pid) {
                 case "0" : pidnm="◎受取場住所完全一致" ; break ;
                 case "1" : pidnm="△受取場住所部分一致" ; break ;
@@ -124,7 +127,7 @@ module.controller('AppController', function($scope, Product, $http) {
                 keido: firstResult[4],
                 haijun: firstResult[5],
                 nm: firstResult[6],
-                url: secondResult+firstResult[3]+','+firstResult[4]
+                url: secondResult+para
             });
         }
         
