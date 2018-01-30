@@ -175,7 +175,7 @@ module.controller('AppController', function($scope, Product, $http) {
     $scope.delHistory = function() {
         var str;
         str=JSON.stringify($scope.currentProduct);
-        console.log(str);
+        $scope.history = JSON.parse(window.localStorage.getItem('history'));
     };
     
     try {
