@@ -175,12 +175,10 @@ module.controller('AppController', function($scope, Product, $http) {
     $scope.delHistory = function() {
         var str;
         str=JSON.stringify($scope.currentProduct);
-//        console.log(str);
         $scope.history = JSON.parse(window.localStorage.getItem('history'));
         for (var i=0;i<$scope.history.length;i++){
-            if(str==$scope.history[i]){
-                console.log($scope.history[i]);
-            }
+//            console.log(str);
+            console.log($scope.history[i]);
         }
     };
     
