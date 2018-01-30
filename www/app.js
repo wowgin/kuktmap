@@ -166,13 +166,16 @@ module.controller('AppController', function($scope, Product, $http) {
         window.localStorage.setItem('history', JSON.stringify($scope.history));
     };
     
-    $scope.saveHistory = function() {
+    $scope.clearHistory = function() {
         window.localStorage.setItem('history', JSON.stringify($scope.history));
+        $scope.history=[];
+        $scope.saveHistory();
     };
     
     $scope.delHistory = function() {
-        window.localStorage.removeItem(JSON.stringify($scope.currentProduct));
-        navi.pushPage('history.html');
+        var str;
+        str=JSON.stringify($scope.currentProduct);
+        console.log(str);
     };
     
     try {
