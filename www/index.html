@@ -86,7 +86,7 @@
                 </ons-toolbar>
                 <ons-list>
                     <ons-list-item ng-repeat="product in history track by $index" 
-                        class="item-wrapper" modifier="chevron" ng-click="selectProduct(product)">
+                        class="item-wrapper" modifier="chevron" ng-click="selectProduct(product,$index)">
                         <div class="item-title">ナマエ: {{product.nm}}</div>
                         <ons-row>
                             <ons-col>

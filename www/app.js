@@ -44,7 +44,7 @@ module.controller('AppController', function($scope, Product, $http) {
                     $scope.history = $scope.history.slice(0, 50);
                     $scope.saveHistory();
                     
-                    $scope.selectProduct(product);
+                    $scope.selectProduct(product,0);
                     setTimeout(function() {
                         loadingDialog.hide();
                     }, 200);
@@ -73,7 +73,8 @@ module.controller('AppController', function($scope, Product, $http) {
         plugins.barcodeScanner.scan(onSuccess, onFailure);
     };
     
-    $scope.selectProduct = function(product) {
+    $scope.selectProduct = function(product,idno) {
+        $scope.idno=idno;
         $scope.currentProduct = product;
         navi.pushPage('details.html');
     };
@@ -170,16 +171,24 @@ module.controller('AppController', function($scope, Product, $http) {
         window.localStorage.setItem('history', JSON.stringify($scope.history));
         $scope.history=[];
         $scope.saveHistory();
+        ons.notification.alert({
+            title: '削除成功',
+            message: '履歴を全件削除しました。！',
+            buttonLabel: 'OK',
+            animation: 'default', // もしくは'none'
+        });
     };
     
     $scope.delHistory = function() {
-        var str;
-        str=JSON.stringify($scope.currentProduct);
-        $scope.history = JSON.parse(window.localStorage.getItem('history'));
-        for (var i=0;i<$scope.history.length;i++){
-//            console.log(str);
-            console.log($scope.history[i]);
-        }
+        window.localStorage.setItem('history', JSON.stringify($scope.history));
+        $scope.history.splice($scope.idno,1);
+        $scope.saveHistory();
+        ons.notification.alert({
+            title: '削除成功',
+            message: '履歴から削除しました。！',
+            buttonLabel: 'OK',
+            animation: 'default', // もしくは'none'
+        });
     };
     
     try {
