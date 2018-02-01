@@ -189,6 +189,7 @@ module.controller('AppController', function($scope, Product, $http) {
             buttonLabel: 'OK',
             animation: 'default', // もしくは'none'
         });
+        navi.popPage();
     };
     
     try {
