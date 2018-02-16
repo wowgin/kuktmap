@@ -160,7 +160,16 @@ module.controller('AppController', function($scope, Product, $http) {
 
     $scope.openWithBrowser = function(url) {
         // 外部ブラウザで開く
-        window.open(url, '_system');
+        if($scope.currentProduct.adr=="　"){
+            ons.notification.alert({
+                title: '表示不可',
+                message: '住所情報がありません！',
+                buttonLabel: 'OK',
+                animation: 'default', // もしくは'none'
+            });
+            return false;
+        }
+        window.open(url, '_system');    
     };
     
     $scope.saveHistory = function() {
