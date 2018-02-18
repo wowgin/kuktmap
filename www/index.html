@@ -69,9 +69,9 @@
                 <div class="detail-ido">緯度: {{currentProduct.ido}}</div>
                 <div class="detail-keido">経度: {{currentProduct.keido}}</div>
                 <div class="detail-keido">住所: {{currentProduct.adr}}</div>
-                <ons-button modifier="large" ng-click="openWithBrowser(currentProduct.url)">地図を表示する（位置）</ons-button>
+                <ons-button modifier="large" ng-click="openWithBrowser(currentProduct.url,1)">地図を表示する（位置）</ons-button>
                 <br>
-                <ons-button modifier="large" ng-click="openWithBrowser(currentProduct.url2)">地図を表示する（住所）</ons-button>
+                <ons-button modifier="large" ng-click="openWithBrowser(currentProduct.url2,2)">地図を表示する（住所）</ons-button>
                 <br>
             </div>
         </ons-page>

@@ -158,16 +158,18 @@ module.controller('AppController', function($scope, Product, $http) {
         }
     };
 
-    $scope.openWithBrowser = function(url) {
+    $scope.openWithBrowser = function(url,flg) {
         // 外部ブラウザで開く
-        if($scope.currentProduct.adr=="　"){
-            ons.notification.alert({
-                title: '表示不可',
-                message: '住所情報がありません！',
-                buttonLabel: 'OK',
-                animation: 'default', // もしくは'none'
-            });
-            return false;
+        if(flg==2){
+            if($scope.currentProduct.adr=="　"){
+                ons.notification.alert({
+                    title: '表示不可',
+                    message: '住所情報がありません！',
+                    buttonLabel: 'OK',
+                    animation: 'default', // もしくは'none'
+                });
+                return false;
+            }
         }
         window.open(url, '_system');    
     };
