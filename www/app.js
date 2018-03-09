@@ -11,11 +11,17 @@ ons.ready(function() {
 
 module.factory('Product', function() {
    var Product = function(params) {
+       this.id=params.id;
+       this.idnm=params.idnm;
+       this.kumcd=params.kumcd;
        this.ukecd = params.ukecd;
        this.ido = params.ido;
        this.keido = params.keido;
        this.haijun = params.haijun;
+       this.nm = params.nm;
+       this.adr = params.adr;
        this.url = params.url;
+       this.url2 = params.url2;
    };
    
    return Product;
@@ -38,14 +44,14 @@ module.controller('AppController', function($scope, Product, $http) {
                     $scope.history = $scope.history.slice(0, 50);
                     $scope.saveHistory();
                     
-                    $scope.selectProduct(product);
+                    $scope.selectProduct(product,0);
                     setTimeout(function() {
                         loadingDialog.hide();
                     }, 200);
                 }, function() {
                     loadingDialog.hide();
                     ons.notification.alert({
-                        title: '受取場検索に失敗しました',
+                        title: '検索が失敗しました',
                         message: 'バーコードの形式が違います！',
                         buttonLabel: 'OK',
                         animation: 'default', // もしくは'none'
@@ -67,7 +73,8 @@ module.controller('AppController', function($scope, Product, $http) {
         plugins.barcodeScanner.scan(onSuccess, onFailure);
     };
     
-    $scope.selectProduct = function(product) {
+    $scope.selectProduct = function(product,idno) {
+        $scope.idno=idno;
         $scope.currentProduct = product;
         navi.pushPage('details.html');
     };
@@ -81,7 +88,7 @@ module.controller('AppController', function($scope, Product, $http) {
         var arr=ret.split(',');
         var apiUrl = 'http://maps.google.com/maps?q=';
         
-        if(Object.keys(arr).length<4){
+        if(Object.keys(arr).length<8){
             failCallback();
             return false;
         }
@@ -94,13 +101,40 @@ module.controller('AppController', function($scope, Product, $http) {
         function createProduct(response,response2) {
             var firstResult = response;
             var secondResult = response2;
+            var pid;
+            var pidnm;
+            var para
+            var para2
+            
+            para=firstResult[3]+','+firstResult[4]
+            para2=firstResult[7]
+            
+            pid=firstResult[0];
+                        
+            switch (pid) {
+                case "0" : pidnm="◎受取場住所完全一致" ; break ;
+                case "1" : pidnm="△受取場住所部分一致" ; break ;
+                case "2" : pidnm="◎受取場住所手動変更" ; break ;
+                case "100" : pidnm="◎組合員住所完全一致" ; break ;
+                case "101" : pidnm="△組合員住所部分一致" ; break ;
+                case "102" : pidnm="◎組合員住所手動変更" ; break ;
+                case "600" : pidnm="コメント情報" ; break ;
+                case "700" : pidnm="写真情報" ; break ;
+                default : pidnm="検索結果候補なし" ; break ;
+            }
             
             return new Product({
-                ukecd: firstResult[0],
-                ido: firstResult[1],
-                keido: firstResult[2],
-                haijun: firstResult[3],
-                url: secondResult+firstResult[1]+','+firstResult[2]
+                id: pid,
+                idnm: pidnm,
+                kumcd: firstResult[1],
+                ukecd: firstResult[2],
+                ido: firstResult[3],
+                keido: firstResult[4],
+                haijun: firstResult[5],
+                nm: firstResult[6],
+                adr: firstResult[7],
+                url: secondResult+para,
+                url2: secondResult+para2
             });
         }
         
@@ -124,9 +158,20 @@ module.controller('AppController', function($scope, Product, $http) {
         }
     };
 
-    $scope.openWithBrowser = function(url) {
+    $scope.openWithBrowser = function(url,flg) {
         // 外部ブラウザで開く
-        window.open(url, '_system');
+        if(flg==2){
+            if($scope.currentProduct.adr=="　"){
+                ons.notification.alert({
+                    title: '表示不可',
+                    message: '住所情報がありません！',
+                    buttonLabel: 'OK',
+                    animation: 'default', // もしくは'none'
+                });
+                return false;
+            }
+        }
+        window.open(url, '_system');    
     };
     
     $scope.saveHistory = function() {
@@ -134,8 +179,28 @@ module.controller('AppController', function($scope, Product, $http) {
     };
     
     $scope.clearHistory = function() {
-        $scope.history = [];
+        window.localStorage.setItem('history', JSON.stringify($scope.history));
+        $scope.history=[];
         $scope.saveHistory();
+        ons.notification.alert({
+            title: '削除成功',
+            message: '履歴を全件削除しました。！',
+            buttonLabel: 'OK',
+            animation: 'default', // もしくは'none'
+        });
+    };
+    
+    $scope.delHistory = function() {
+        window.localStorage.setItem('history', JSON.stringify($scope.history));
+        $scope.history.splice($scope.idno,1);
+        $scope.saveHistory();
+        ons.notification.alert({
+            title: '削除成功',
+            message: '履歴から削除しました。！',
+            buttonLabel: 'OK',
+            animation: 'default', // もしくは'none'
+        });
+        navi.popPage();
     };
     
     try {
