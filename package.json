@@ -1,0 +1,24 @@
+{
+    "name": "monaca-project",
+    "description": "Monaca project",
+    "scripts": {
+        "monaca:preview": "npm run dev",
+        "dev": "browser-sync start -s www/ --watch --port 8080 --ui-port 8081"
+    },
+    "devDependencies": {
+        "browser-sync": "^2.24.5",
+        "cordova": "^6.5.0"
+    },
+    "cordova": {
+        "plugins": {
+            "monaca-plugin-barcodescanner": {},
+            "cordova-plugin-whitelist": {},
+            "cordova-plugin-inappbrowser": {}
+        }
+    },
+    "dependencies": {
+        "monaca-plugin-barcodescanner": "1.1.4",
+        "cordova-plugin-whitelist": "1.3.3",
+        "cordova-plugin-inappbrowser": "2.0.1"
+    }
+}
