@@ -11,12 +11,17 @@ ons.ready(function() {
 
 module.factory('Product', function() {
    var Product = function(params) {
-       this.name = params.name;
-       this.price = params.price;
-       this.desc = params.desc;
-       this.thumbnailUrl = params.thumbnailUrl;
-       this.imageUrl = params.imageUrl;
+       this.id=params.id;
+       this.idnm=params.idnm;
+       this.kumcd=params.kumcd;
+       this.ukecd = params.ukecd;
+       this.ido = params.ido;
+       this.keido = params.keido;
+       this.haijun = params.haijun;
+       this.nm = params.nm;
+       this.adr = params.adr;
        this.url = params.url;
+       this.url2 = params.url2;
    };
    
    return Product;
@@ -27,27 +32,27 @@ module.controller('AppController', function($scope, Product, $http) {
     $scope.scan = function() {
         var onSuccess = function(result) {
             if (!result.cancelled) {
-                /*alert("We got a barcode\n" +
-                      "Result: " + result.text + "\n" +
-                      "Format: " + result.format + "\n" +
-                      "Cancelled: " + result.cancelled);*/
+//                alert("We got a barcode\n" +
+//                      "Result: " + result.text + "\n" +
+//                      "Format: " + result.format + "\n" +
+//                      "Cancelled: " + result.cancelled);
                 
                 loadingDialog.show();
                 
                 $scope.search(result.text, function(product) {
                     $scope.history.unshift(product);
-                    $scope.history = $scope.history.slice(0, 10);
+                    $scope.history = $scope.history.slice(0, 50);
                     $scope.saveHistory();
                     
-                    $scope.selectProduct(product);
+                    $scope.selectProduct(product,0);
                     setTimeout(function() {
                         loadingDialog.hide();
                     }, 200);
                 }, function() {
                     loadingDialog.hide();
                     ons.notification.alert({
-                        title: '商品検索に失敗しました',
-                        message: '商品情報を取得できませんでした',
+                        title: '検索が失敗しました',
+                        message: 'バーコードの形式が違います！',
                         buttonLabel: 'OK',
                         animation: 'default', // もしくは'none'
                     });
@@ -68,46 +73,105 @@ module.controller('AppController', function($scope, Product, $http) {
         plugins.barcodeScanner.scan(onSuccess, onFailure);
     };
     
-    $scope.selectProduct = function(product) {
+    $scope.selectProduct = function(product,idno) {
+        $scope.idno=idno;
         $scope.currentProduct = product;
         navi.pushPage('details.html');
     };
 
-    $scope.search = function(janCode, callback, failCallback) {
-        var apiUrl = 'http://shopping.yahooapis.jp/ShoppingWebService/V1/json/itemSearch';
-        // 取得したアプリIDを代入
-        // http://www.yahoo-help.jp/app/answers/detail/p/537/a_id/43398/session/L2F2LzEvdGltZS8xNDE4NjEyODk4L3NpZC9WekVGaFc5bQ%3D%3D
-        var appId = 'dj0zaiZpPVdaMnVsQnF4aHVlUCZzPWNvbnN1bWVyc2VjcmV0Jng9YTE-';
-        $http.get(apiUrl, {params: {appid: appId, jan: janCode}})
-            .success(function(data, status, headers, config) {
-                try {
-                    var product = createProduct(data);
-                    callback(product);
-                } catch(e) {
-                    failCallback();
-                }
-            })
-            .error(function(data, status, headers, config) {
-                failCallback();
-            });
+    $scope.search = function(getStr, callback, failCallback) {
+        //  暗号化したデータを複合化
+        var ret;
+        var key=4;
+        ret=decaesar(getStr,key);
+        
+        var arr=ret.split(',');
+        var apiUrl = 'http://maps.google.com/maps?q=';
+        
+        if(Object.keys(arr).length<8){
+            failCallback();
+            return false;
+        }
+        
+        var product=createProduct(arr,apiUrl);
+        
+        callback(product);
         
         // APIの返り値からProductオブジェクトを生成する
-        function createProduct(response) {
-            var firstResult = response.ResultSet[0].Result[0];
+        function createProduct(response,response2) {
+            var firstResult = response;
+            var secondResult = response2;
+            var pid;
+            var pidnm;
+            var para
+            var para2
+            
+            para=firstResult[3]+','+firstResult[4]
+            para2=firstResult[7]
+            
+            pid=firstResult[0];
+                        
+            switch (pid) {
+                case "0" : pidnm="◎受取場住所完全一致" ; break ;
+                case "1" : pidnm="△受取場住所部分一致" ; break ;
+                case "2" : pidnm="◎受取場住所手動変更" ; break ;
+                case "100" : pidnm="◎組合員住所完全一致" ; break ;
+                case "101" : pidnm="△組合員住所部分一致" ; break ;
+                case "102" : pidnm="◎組合員住所手動変更" ; break ;
+                case "600" : pidnm="コメント情報" ; break ;
+                case "700" : pidnm="写真情報" ; break ;
+                default : pidnm="検索結果候補なし" ; break ;
+            }
+            
             return new Product({
-                name: firstResult.Name,
-                desc: firstResult.Description,
-                url: firstResult.Url,
-                imageUrl: firstResult.Image.Medium,
-                thumbnailUrl: firstResult.Image.Small,
-                price: firstResult.Price._value
+                id: pid,
+                idnm: pidnm,
+                kumcd: firstResult[1],
+                ukecd: firstResult[2],
+                ido: firstResult[3],
+                keido: firstResult[4],
+                haijun: firstResult[5],
+                nm: firstResult[6],
+                adr: firstResult[7],
+                url: secondResult+para,
+                url2: secondResult+para2
             });
+        }
+        
+        /* シーザーー暗号化 */
+        function caesar(val, key) {
+          val = encodeURIComponent(val);
+          var result = "";
+          for (var i = 0; i < val.length; i++) {
+            result += String.fromCharCode(val.charCodeAt(i) + key);
+          }
+          return result;
+        }
+        
+        /* シーザー復号化 */
+        function decaesar(val, key) {
+          var result = "";
+          for (var i = 0; i < val.length; i++) {
+            result += String.fromCharCode(val.charCodeAt(i) - key);
+          }
+          return decodeURIComponent(result) ;
         }
     };
 
-    $scope.openWithBrowser = function(url) {
+    $scope.openWithBrowser = function(url,flg) {
         // 外部ブラウザで開く
-        window.open(url, '_system');
+        if(flg==2){
+            if($scope.currentProduct.adr=="　"){
+                ons.notification.alert({
+                    title: '表示不可',
+                    message: '住所情報がありません！',
+                    buttonLabel: 'OK',
+                    animation: 'default', // もしくは'none'
+                });
+                return false;
+            }
+        }
+        window.open(url, '_system');    
     };
     
     $scope.saveHistory = function() {
@@ -115,8 +179,28 @@ module.controller('AppController', function($scope, Product, $http) {
     };
     
     $scope.clearHistory = function() {
-        $scope.history = [];
+        window.localStorage.setItem('history', JSON.stringify($scope.history));
+        $scope.history=[];
         $scope.saveHistory();
+        ons.notification.alert({
+            title: '削除成功',
+            message: '履歴を全件削除しました。！',
+            buttonLabel: 'OK',
+            animation: 'default', // もしくは'none'
+        });
+    };
+    
+    $scope.delHistory = function() {
+        window.localStorage.setItem('history', JSON.stringify($scope.history));
+        $scope.history.splice($scope.idno,1);
+        $scope.saveHistory();
+        ons.notification.alert({
+            title: '削除成功',
+            message: '履歴から削除しました。！',
+            buttonLabel: 'OK',
+            animation: 'default', // もしくは'none'
+        });
+        navi.popPage();
     };
     
     try {

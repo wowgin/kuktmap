@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "name": "monaca-project",
     "description": "Monaca project",
     "scripts": {
@@ -20,5 +21,19 @@
         "monaca-plugin-barcodescanner": "1.1.4",
         "cordova-plugin-whitelist": "1.3.3",
         "cordova-plugin-inappbrowser": "2.0.1"
+=======
+    "name": "kuktmap",
+    "cordova": {
+        "plugins": {
+            "cordova-plugin-whitelist": {},
+            "cordova-plugin-inappbrowser": {},
+            "mobi.monaca.plugins.BarcodeScanner": {}
+        }
+    },
+    "dependencies": {
+        "cordova-plugin-whitelist": "1.3.3",
+        "cordova-plugin-inappbrowser": "2.0.1",
+        "mobi.monaca.plugins.BarcodeScanner": "1.1.4"
+>>>>>>> 299d5ab9649b31de8901949628ddf5c38557176c
     }
 }
